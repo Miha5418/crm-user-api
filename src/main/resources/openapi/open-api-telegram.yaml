@@ -1,0 +1,129 @@
+openapi: 3.0.3
+info:
+  title: API telegram
+  description: Обеспечивает взаимодействие telegram
+  version: 0.1.0
+  contact:
+    name: Karpeykin
+
+servers:
+  - url: 'http://localhost:8080'
+    description: Development server
+  - url: 'http://localhost:8080'
+    description: Local run server
+  - url: 'http://localhost:8080'
+    description: Productive server
+  - url: 'http://localhost:8080'
+    description: Test server
+
+paths:
+
+  /telegram/base/login:
+    post:
+      description: Первичная регистрация клиента
+      operationId: registrationClient
+      tags:
+        - TelegramBases
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TelegramRegistration"
+      responses:
+        200:
+          description: Авторизация прошла успешно
+        400:
+          description: Недопустимые параметры вызова
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseError"
+        401:
+          description: Пользователь ввел неверный номер абонемента
+
+  /telegram/obtainingInformationAboutClient/isActiveClient:
+    post:
+      description: Запрос информации о активности клиента
+      operationId: isActiveClient
+      tags:
+        - ObtainingInformationAboutClient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestIsActiveClient"
+      responses:
+        200:
+          description: Недопустимые параметры вызова
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseIsActiveClient"
+        400:
+          description: Недопустимые параметры вызова
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseError"
+
+
+components:
+
+  schemas:
+
+    TelegramRegistration:
+      description: Первичная регистрация
+      type: object
+      properties:
+        clientId:
+          description: Идентификатор клиента
+          type: string
+        telegramId:
+          description: Идентификатор телеграм
+          type: string
+
+    ApiResponseError:
+      description: Информация об ошибке
+      type: object
+      required:
+        - title
+        - status
+      properties:
+        title:
+          type: string
+          description: Краткое сообщение об ошибке
+        status:
+          type: integer
+          format: int64
+          description: HTTP код ответа
+        detail:
+          type: string
+          description: Полное сообщение об ошибке
+
+
+    RequestIsActiveClient:
+      description: Запрос информации об активности клиента
+      type: object
+      required:
+        - telegramId
+      properties:
+        telegramId:
+          description: Идентификатор телеграм
+          type: string
+
+    ResponseIsActiveClient:
+      description: Ответ информации об активности клиента
+      type: object
+      required:
+        - isActive
+      properties:
+        isActive:
+          description: флаг отображающий активность
+          type: boolean
+        expirationDate:
+          description: Дата начала действия абонемента
+          type: string
+          format: 'date-time'
+
