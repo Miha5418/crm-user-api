@@ -39,8 +39,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiResponseError"
-        401:
-          description: Пользователь ввел неверный номер абонемента
 
   /telegram/obtainingInformationAboutClient/isActiveClient:
     post:
